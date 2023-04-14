@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>成品汽油罐式批次调和配方管理系统</title>
+    <meta charset="UTF-8">
+    <!-- 引入Bootstrap样式 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css">
+    <!-- 引入Echarts库 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.1/echarts.min.js"></script>
+    <style>
+        /* 样式表 */
+        .box {
+            width: 350px;
+            height: 220px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 20px;
+            background: linear-gradient(120deg, #2980b9, #1abc9c);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .box1 {
+            width: 1000px;
+            height: 80px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 20px;
+            background: linear-gradient(120deg, #2980b9, #1abc9c);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .chart {
+            margin-top: 20px;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .tablink {
+            display: inline-block;
+            background-color: #f8f9fa;
+            color: #212529;
+            padding: 10px 20px;
+            border: none;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .tablink.active {
+            background-color: #fff;
+            color: #0d6efd;
+        }
+
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 0 5px 5px 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .table {
+            width: 100%;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 10px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #dee2e6;
+        }
+
+        .select-box {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .select-box > div {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .select-box > div:last-child {
+            margin-right: 0;
+        }
+
+        .select-box label {
+            margin-right: 5px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .select-box select {
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            width: 100px;
+            max-width: 100%;
+        }
+
+        .select-box select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            outline: 0;
+        }
+
+        .btn-submit {
+            background-color: #0d6efd;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #0b5ed7;
+        }
+
+        .chart {
+            width: 500px;
+            height: 300px;
+            margin-bottom: 20px;
+            margin-right: 70px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .chart1 {
+            width: 1200px;
+            height: 500px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .chart-wrapper {
+            width: 800px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>成品汽油罐式批次调和配方管理系统</h1>
+    <!-- 四个Tab -->
+    <div class="d-flex">
+        <button class="tablink active" onclick="openPage('home', this)">首页</button>
+        <button class="tablink" onclick="openPage('evaluation', this)">配方评价</button>
+        <button class="tablink" onclick="openPage('history', this)">配方维护</button>
+        <button class="tablink" onclick="openPage('alarm', this)">历史配方查看</button>
+        <button class="tablink" onclick="openPage('blank1', this)">报警与事件记录</button>
+        <button class="tablink" onclick="openPage('blank2', this)">系统维护</button>
+    </div>
+    <!-- Tab内容 -->
+    <div id="home" class="tabcontent">
+        <div class="select-box">
+            <div style="display: flex">
+                <label for="select1" style="width: 55%;height: 40px;margin: auto">当前罐号选择:</label>
+                <select id="select1" style="height: 40px">
+                    <option value="1">----</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <label for="time" class="form-label" style="width: 40%;margin-left: 40px;height: 20px">选择时间:</label>
+                <input type="datetime-local" id="time" name="time" class="form-control">
+                <button class="btn-submit" style="width: 30%;height: 40px;margin-left: 40px">查询</button>
+            </div>
+        </div>
+        <!-- 表格 -->
+        <table class="table">
+            <thead>
+            <tr>
+                <th>加氢汽油</th>
+                <th>醚化汽油</th>
+                <th>MTBE</th>
+                <th>车用异辛烷</th>
+                <th>汽油重芳烃</th>
+                <th>生成油</th>
+                <th>乙苯</th>
+                <th>甲苯</th>
+                <th>二甲苯</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>数据1</td>
+                <td>数据2</td>
+                <td>数据3</td>
+                <td>数据4</td>
+                <td>数据5</td>
+                <td>数据6</td>
+                <td>数据7</td>
+                <td>数据8</td>
+                <td>数据9</td>
+            </tr>
+            <tr>
+                <td>数据1</td>
+                <td>数据2</td>
+                <td>数据3</td>
+                <td>数据4</td>
+                <td>数据5</td>
+                <td>数据6</td>
+                <td>数据7</td>
+                <td>数据8</td>
+                <td>数据9</td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- 时间选择框 -->
+        <div class="chart-wrapper" style="display: flex;width: 100%">
+            <div class="box" style="width: 50%;margin-right: 120px;margin-left: 50px">
+                {#            <h2>这里是标题</h2>#}
+                <p style="font-size: 20px">
+                    欢迎进入成品汽油罐式批次调和配方管理系统，该系统专注于调和配方质量评价，配方运维，系统管理三部分。其中配方配件和运维模块随着后期时间推移，会有新的技术推进。我们致力于确保调和配方高效能生产，提升效益</p>
+            </div>
+            <div id="pie-chart" class="chart"></div>
+
+        </div>
+        <div class="select-box">
+            <div>
+                <label for="select1">罐式配方选择</label>
+                <select id="select1">
+                    <option value="1">----</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <button class="btn-submit" style="height: 40px;">查询</button>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>加氢汽油</th>
+                <th>醚化汽油</th>
+                <th>MTBE</th>
+                <th>车用异辛烷</th>
+                <th>汽油重芳烃</th>
+                <th>生成油</th>
+                <th>乙苯</th>
+                <th>甲苯</th>
+                <th>二甲苯</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>数据1</td>
+                <td>数据2</td>
+                <td>数据3</td>
+                <td>数据4</td>
+                <td>数据5</td>
+                <td>数据6</td>
+                <td>数据7</td>
+                <td>数据8</td>
+                <td>数据9</td>
+            </tr>
+            <tr>
+                <td>数据1</td>
+                <td>数据2</td>
+                <td>数据3</td>
+                <td>数据4</td>
+                <td>数据5</td>
+                <td>数据6</td>
+                <td>数据7</td>
+                <td>数据8</td>
+                <td>数据9</td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div id="evaluation" class="tabcontent">
+        <h2>调和配方质量评价准则</h2>
+        <!-- 表格 -->
+        <table class="table">
+            <thead>
+            <tr>
+                <th>配方质量等级</th>
+                <th>性能质量指标类别</th>
+                <th>辛烷值</th>
+                <th>抗暴值</th>
+                <th>硫含量 /mg*kg﹣¹</th>
+                <th>苯体积分数 /%</th>
+                <th>烯烃含量 /%</th>
+                <th>芳烃含量 /%</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>不合格</td>
+                <td>严重过剩</td>
+                <td>[93.4,94.0)</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>过剩</td>
+                <td>[93.0,93.4)</td>
+                <td>>87</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>合格</td>
+                <td>满意</td>
+                <td>[92.8,93.0)</td>
+                <td></td>
+                <td>≤9</td>
+                <td>≤0.75</td>
+                <td>≤17.5</td>
+                <td>≤34</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>卡边</td>
+                <td>[92.6,92.8)</td>
+                <td>=87</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>不合格</td>
+                <td>不足</td>
+                <td><92.6</td>
+                <td><87</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- select框 -->
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;加氢汽油&nbsp; &nbsp; &nbsp; MTBE&nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 醚化汽油&nbsp; &nbsp; &nbsp; 汽油重芳烃&nbsp; &nbsp;车用异辛烷&nbsp; &nbsp;乙苯&nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 甲苯&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 二甲苯&nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; 生成油
+        <div class="select-box">
+            <div>
+                <label for="select1">配方组输入:</label>
+                <select id="select1" name="select1" style="width: 90px">
+                    <option value="1">选项1</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <select id="select1" name="select1" style="width: 90px">
+                    <option value="1">选项1</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <select id="select1" name="select1" style="width: 90px">
+                    <option value="1">选项1</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <select id="select1" name="select1" style="width: 90px">
+                    <option value="1">选项1</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <select id="select1" name="select1" style="width: 90px">
+                    <option value="1">选项1</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <select id="select1" name="select1" style="width: 90px">
+                    <option value="1">选项1</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <select id="select1" name="select1" style="width: 90px">
+                    <option value="1">选项1</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <select id="select1" name="select1" style="width: 90px">
+                    <option value="1">选项1</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <select id="select1" name="select1" style="width: 90px">
+                    <option value="1">选项1</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+            </div>
+        </div>
+        <div class="select-box">
+            <div>
+                <label for="select1">选择配方评价方法:</label>
+                <select id="select1" name="select1" style="width: 90px">
+                    <option value="1">选项1</option>
+                    <option value="2">选项2</option>
+                    <option value="3">选项3</option>
+                </select>
+                <button class="btn-submit" style="height: 38px">运行</button>
+            </div>
+        </div>
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;研究法辛烷值&nbsp;&nbsp;&nbsp;抗暴值&nbsp;
+        &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;硫含量&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 苯含量&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;烯烃含量&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;芳烃含量
+        <div class="select-box">
+            <div>
+                <label for="select1">配方质量输出</label>
+                <input id="select1" name="select1" style="width: 90px">
+                <input id="select1" name="select1" style="width: 90px">
+                <input id="select1" name="select1" style="width: 90px">
+                <input id="select1" name="select1" style="width: 90px">
+                <input id="select1" name="select1" style="width: 90px">
+                <input id="select1" name="select1" style="width: 90px">
+            </div>
+        </div>
+        <div class="select-box">
+            <div>
+                <label for="select1">配方评价：</label>
+
+                <label for="select1" style="border: 1px solid black;padding: 5px;">合格</label>
+            </div>
+        </div>
+        <div class="box1">
+            <p style="font-size: 20px">
+                烯烃含量过高，考虑是由MTBE或加氢汽油含量过高所致，建议减少或提高生成油、二甲苯组分含量。 </p>
+        </div>
+
+    </div>
+    <div id="history" class="tabcontent">
+        <h2>修正前不合适配方</h2>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>加氢汽油</th>
+                <th>醚化汽油</th>
+                <th>MTBE</th>
+                <th>车用异辛烷</th>
+                <th>汽油重芳烃</th>
+                <th>生成油</th>
+                <th>乙苯</th>
+                <th>甲苯</th>
+                <th>二甲苯</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>数据1</td>
+                <td>数据2</td>
+                <td>数据3</td>
+                <td>数据4</td>
+                <td>数据5</td>
+                <td>数据6</td>
+                <td>数据7</td>
+                <td>数据8</td>
+                <td>数据9</td>
+            </tr>
+            <tr>
+                <td>数据1</td>
+                <td>数据2</td>
+                <td>数据3</td>
+                <td>数据4</td>
+                <td>数据5</td>
+                <td>数据6</td>
+                <td>数据7</td>
+                <td>数据8</td>
+                <td>数据9</td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <!-- SVG图 -->
+        <h2>修正前配方质量致因</h2>
+        <div style="display: flex">
+            <object type="image/svg+xml" data="http://127.0.0.1:8000/templates/assets/2.svg"
+                    style="width: 50%;height: 80%"></object>
+            <object type="image/svg+xml" data="http://127.0.0.1:8000/templates/assets/1.svg"
+                    style="width: 50%;height: 80%"></object>
+        </div>
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;辛烷值致因
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;芳烃含量致因
+        <div class="box1">
+            <p style="font-size: 20px">
+                抗爆值过于卡边，考虑乙苯、汽油重芳烃及二甲苯组分添加过少，建议提升其添加比。 </p>
+        </div>
+        <!-- select框 -->
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;研究法辛烷值&nbsp; &nbsp; 抗爆值&nbsp;
+        &nbsp; &nbsp; &nbsp;硫含量&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;苯含量&nbsp; &nbsp;&nbsp; &nbsp; 10%蒸发温度&nbsp;50%蒸发温度&nbsp;
+        &nbsp;烯烃含量&nbsp; &nbsp;芳烃含量&nbsp; &nbsp; &nbsp;密度
+        &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; 配方生成方法选择
+        <div class="select-box">
+            <label for="select1">期望指标:</label>
+            <input id="select1" name="select1" style="width: 90px;margin-left: 3px">
+            <input id="select1" name="select1" style="width: 90px;margin-left: 3px">
+            <input id="select1" name="select1" style="width: 90px;margin-left: 3px">
+            <input id="select1" name="select1" style="width: 90px;margin-left: 3px">
+            <input id="select1" name="select1" style="width: 90px;margin-left: 3px">
+            <input id="select1" name="select1" style="width: 90px;margin-left: 3px">
+            <input id="select1" name="select1" style="width: 90px;margin-left: 3px">
+            <input id="select1" name="select1" style="width: 90px;margin-left: 3px">
+            <input id="select1" name="select1" style="width: 90px;margin-left: 3px">
+            <select id="select1" name="select1" style="width: 90px;margin-left: 3px">
+                <option value="1">选项1</option>
+                <option value="2">选项2</option>
+                <option value="3">选项3</option>
+            </select>
+            <button class="btn-submit" style="height: 40px;;margin-left: 20px">运行</button>
+        </div>
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;加氢汽油&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;MTBE&nbsp;
+        &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;车用异辛烷&nbsp; &nbsp; &nbsp;汽油重芳烃&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;乙苯&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;甲苯
+        <div class="select-box">
+            <div>
+                <label for="select1">生成配方</label>
+                <input id="select1" name="select1" style="width: 90px">
+                <input id="select1" name="select1" style="width: 90px">
+                <input id="select1" name="select1" style="width: 90px">
+                <input id="select1" name="select1" style="width: 90px">
+                <input id="select1" name="select1" style="width: 90px">
+                <input id="select1" name="select1" style="width: 90px">
+            </div>
+        </div>
+
+
+    </div>
+    <div id="alarm" class="tabcontent">
+        <h2>历史配方查看</h2>
+        <!-- 表格 -->
+        <table class="table">
+            <thead>
+            <tr>
+                <th>评价结果</th>
+                <th>罐号</th>
+                <th>辛烷值</th>
+                <th>抗爆值</th>
+                <th>硫含量</th>
+                <th>苯含量</th>
+                <th>烯烃</th>
+                <th>芳烃</th>
+                <th>氧含量</th>
+                <th>密度</th>
+                <th>加氢汽油</th>
+                <th>醚化汽油</th>
+                <th>MTBE</th>
+                <th>车用异辛烷</th>
+                <th>汽油重芳烃</th>
+                <th>生成油</th>
+                <th>乙苯</th>
+                <th>甲苯</th>
+                <th>二甲苯</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>数据1</td>
+                <td>数据2</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+                <td>数据3</td>
+            </tr>
+
+            </tbody>
+        </table>
+        <!-- 柱状图和折线图的结合图表 -->
+        <div class="chart-wrapper" style="margin-right: 450px">
+            <div id="bar-line-chart" class="chart1"></div>
+        </div>
+        <div class="box1">
+            <p style="font-size: 20px">
+                抗爆值过于卡边，考虑乙苯、汽油重芳烃及二甲苯组分添加过少，建议提升其添加比。 </p>
+        </div>
+
+    </div>
+    <div id="blank1" class="tabcontent">
+        <h2>报警与事件记录</h2>
+    </div>
+    <div id="blank2" class="tabcontent">
+        <h2>系统维护</h2>
+    </div>
+</div>
+<script>
+    // JavaScript代码，用于实现Tab的切换和图表的绘制
+    var myChart1 = echarts.init(document.getElementById('pie-chart'));
+    var option1 = {
+// 饼图的配置项和数据
+        title: {
+            left: 'center'
+        },
+        tooltip: {},
+        legend: {
+            data: ['罐号']
+        },
+        series: [{
+            name: '罐号',
+            type: 'pie',
+            radius: '50%',
+            data: [{
+                value: 277,
+                name: '不合格'
+            }]
+        }]
+    };
+    myChart1.setOption(option1);
+    var myChart2 = echarts.init(document.getElementById('bar-line-chart'));
+
+    var option2 = {
+        // 柱状图和折线图的配置项和数据
+        title: {
+            {#text: '柱状图和折线图示例',#}
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['历史配方1','历史配方2']
+        },
+        xAxis: {
+            type: 'category',
+            data: ['辛烷值', '抗爆值', '硫含量', '苯含量', '烯烃', '芳烃', '氧含量', '密度', '加氢汽油', '醚化汽油', 'MTBE', '车用异辛烷', '汽油重芳烃', '生成油', '乙苯', '甲苯', '二甲苯']
+        },
+        yAxis: [{
+            type: 'value',
+            name: '历史配方1'
+        },
+            {
+                type: 'value',
+                name: '历史配方2'
+            }
+        ],
+        series: [{
+            name: '历史配方1',
+            type: 'bar',
+            data: [320, 332, 301, 334, 390, 330, 320, 332, 301, 334, 390, 330, 320, 332, 301, 334, 390]
+        },{
+            name: '历史配方2',
+            type: 'line',
+            data: [320, 332, 301, 334, 390, 330, 320, 332, 301, 334, 390, 330, 320, 332, 301, 334, 390]
+        }]
+    };
+    myChart2.setOption(option2);
+
+    // Tab切换函数
+    function openPage(pageName, elmnt) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName('tabcontent');
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = 'none';
+        }
+        tablinks = document.getElementsByClassName('tablink');
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(' active', '');
+        }
+        document.getElementById(pageName).style.display = 'block';
+        elmnt.className += ' active';
+    }
+
+    // 默认打开首页Tab
+    document.getElementById('home').style.display = 'block';
+</script>
+</body>
+</html>
+
